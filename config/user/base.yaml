@@ -1,0 +1,4 @@
+rest_server:
+  name: "rest_server"
+  host: "localhost"
+  port: 8080
