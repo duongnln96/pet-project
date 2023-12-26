@@ -2,28 +2,35 @@ package config
 
 import (
 	"log"
-	"sync"
 
+	postgresDB "github.com/duongnln96/blog-realworld/pkg/adapter/postgres"
 	scyllaDB "github.com/duongnln96/blog-realworld/pkg/adapter/scylladb"
 	"github.com/spf13/viper"
 )
 
-var (
-	onceLoadConfig = sync.Once{}
-)
+type otherConfig map[string]interface{}
 
-var onceConfigs *Configs
+func (m otherConfig) Get(key string) interface{} {
+	return m[key]
+}
 
 type Configs struct {
+	Other             otherConfig
+	PostgresConfigMap postgresDB.PosgreSQLDBConfigMap
 	ScyllaDBConfigMap scyllaDB.ScyllaDBConfigMap
 }
 
-func LoadConfig(serviceConfigPath string) *Configs {
-	log.Println("Load config from path ", serviceConfigPath)
+func readAllConfig(configPath string) *Configs {
+	log.Println("Load config from path ", configPath)
 
 	var onceConfigs = new(Configs)
 
-	readConfig(serviceConfigPath, "scylladb", &(onceConfigs.ScyllaDBConfigMap))
+	onceConfigs.Other = make(map[string]interface{})
+	readConfig(configPath, "other", &onceConfigs.Other)
+
+	readConfig(configPath, "postgres", &(onceConfigs.PostgresConfigMap))
+
+	readConfig(configPath, "scylladb", &(onceConfigs.ScyllaDBConfigMap))
 
 	return onceConfigs
 }
@@ -40,8 +47,6 @@ func readConfig(configPath, configName string, result interface{}) error {
 	err := viperI.ReadInConfig()
 	if err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			// Config file not found; ignore error if desired
-			log.Printf("[ERROR] %s.yaml file not found", configName)
 			err = nil
 		} else {
 			// Config file was found but another error was produced
@@ -56,4 +61,15 @@ func readConfig(configPath, configName string, result interface{}) error {
 	}
 
 	return nil
+}
+
+var onceConfigs *Configs
+
+func LoadConfig(configPath string) *Configs {
+	if onceConfigs != nil {
+		return onceConfigs
+	}
+
+	onceConfigs = readAllConfig(configPath)
+	return onceConfigs
 }

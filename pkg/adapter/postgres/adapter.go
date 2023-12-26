@@ -8,12 +8,22 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/wire"
 	_ "github.com/lib/pq"
 )
 
-type postgresDBAdapter struct {
-	Client *sql.DB
+type PostgresDBAdapterI interface {
+	GetDB() *sql.DB
+	Close()
 }
+
+var PostgresDBAdapterSet = wire.NewSet(NewPostgresDBAdapter)
+
+type postgresDBAdapter struct {
+	db *sql.DB
+}
+
+var _ PostgresDBAdapterI = (*postgresDBAdapter)(nil)
 
 var (
 	onceMutex               = sync.Mutex{}
@@ -23,7 +33,7 @@ var (
 
 const MAX_RETRY_CONNECT int = 5
 
-func NewPostgresDBAdapter(ctx context.Context, config *ScyllaDBConfig) *postgresDBAdapter {
+func NewPostgresDBAdapter(config *PosgreSQLDBConfig) *postgresDBAdapter {
 
 	if onceSessionByConfigName[config.Name] != nil {
 		return onceSessionByConfigName[config.Name]
@@ -65,7 +75,7 @@ func NewPostgresDBAdapter(ctx context.Context, config *ScyllaDBConfig) *postgres
 			defer cancel()
 
 			retryConnect = 1
-			adapter.Client = dbSession
+			adapter.db = dbSession
 			break
 		}
 
@@ -74,4 +84,13 @@ func NewPostgresDBAdapter(ctx context.Context, config *ScyllaDBConfig) *postgres
 	})
 
 	return onceSessionByConfigName[config.Name]
+}
+func (p *postgresDBAdapter) GetDB() *sql.DB {
+	return p.db
+}
+
+func (p *postgresDBAdapter) Close() {
+	if p.db != nil {
+		p.db.Close()
+	}
 }

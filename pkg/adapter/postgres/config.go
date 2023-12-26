@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type ScyllaDBConfig struct {
+type PosgreSQLDBConfig struct {
 	Name      string        `mapstructure:"name" json:"name"`
 	Host      string        `mapstructure:"host" json:"host"`
 	Port      int           `mapstructure:"port" json:"port"`
@@ -17,14 +17,14 @@ type ScyllaDBConfig struct {
 	PoolLimit int           `mapstructure:"pool_limit" json:"pool_limit"`
 }
 
-func (m ScyllaDBConfig) PrettyPrint() string {
+func (m PosgreSQLDBConfig) PrettyPrint() string {
 	bytes, _ := json.MarshalIndent(m, "", " ")
 	return string(bytes)
 }
 
-type ScyllaDBConfigMap map[string]*ScyllaDBConfig
+type PosgreSQLDBConfigMap map[string]*PosgreSQLDBConfig
 
-func (c ScyllaDBConfigMap) Get(name string) *ScyllaDBConfig {
+func (c PosgreSQLDBConfigMap) Get(name string) *PosgreSQLDBConfig {
 	config, ok := c[name]
 	if !ok {
 		log.Panicf("Not found config name: [%s]", name)
