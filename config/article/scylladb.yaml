@@ -1,0 +1,9 @@
+scylladb_standalone:
+  name: "scylladb_standalone"
+  hosts: ["127.0.0.1"]
+  port: 9042
+  username: scylladb
+  password: testtest
+  keyspace: blogrealworld
+  timeout: 10s
+  pool_limit: 10

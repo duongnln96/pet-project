@@ -1,0 +1,18 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "internal/user/infras/postgresql/user/query/user.sql"
+    schema: "db/migration/000002_init_user.up.sql"
+    gen:
+      go:
+        package: "postgresql"
+        out: "/internal/user/infras/postgresql/user"
+        emit_json_tags: true
+  - engine: "postgresql"
+    queries: "internal/user/infras/postgresql/follow/query/query.sql"
+    schema: "db/migration/000003_follow.up.sql"
+    gen:
+      go:
+        package: "postgresql"
+        out: "/internal/user/infras/postgresql/follow"
+        emit_json_tags: true
