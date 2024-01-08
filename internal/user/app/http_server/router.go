@@ -2,7 +2,8 @@ package http_server
 
 import "github.com/labstack/echo/v4"
 
-func (app *app) publicRoute(e *echo.Echo) {
+func (app *app) routeVer1(e *echo.Echo) {
+
 	apiV1 := e.Group("/api/v1")
 
 	userApi := apiV1.Group("/user")

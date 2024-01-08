@@ -1,0 +1,26 @@
+syntax = "proto3";
+package auth.v1;
+
+service AuthTokenService {
+  rpc ValidateAuthToken(ValidateAuthTokenRequest) returns (ValidateAuthTokenResponse) {}
+  rpc GenAuthToken(GenAuthTokenRequest) returns (GenAuthTokenResponse) {}
+}
+
+message ValidateAuthTokenRequest {
+  string jwt_token = 1;
+}
+
+message ValidateAuthTokenResponse {
+  bool is_valid = 1;
+}
+
+message GenAuthTokenRequest {
+  string user_id = 1;
+  string device_id = 2;
+  string user_agent = 3;
+  string remote_ip = 4;
+}
+
+message GenAuthTokenResponse {
+  string jwt_token = 1;
+}

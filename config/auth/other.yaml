@@ -1,0 +1,9 @@
+# === http server ===
+
+http_port: 80
+
+# === other ===
+
+jwt_secret_key: "123456789123456789123456789123456789"
+jwt_token_duration: 10
+password_secret_key: "123456"

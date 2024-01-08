@@ -1,0 +1,170 @@
+components:
+  requestBodies:
+    LoginUserDTO:
+      content:
+        application/json:
+          schema:
+            properties:
+              email:
+                maxLength: 500
+                type: string
+              password:
+                type: string
+      description: Body request
+      required: true
+    RegisterUserDTO:
+      content:
+        application/json:
+          schema:
+            properties:
+              bio:
+                maxLength: 500
+                type: string
+              email:
+                maxLength: 500
+                type: string
+              name:
+                maxLength: 500
+                type: string
+              password:
+                type: string
+      description: Body request
+      required: true
+    UpdateUserDTO:
+      content:
+        application/json:
+          schema:
+            nullable: true
+            properties:
+              bio:
+                maxLength: 500
+                type: string
+              email:
+                maxLength: 500
+                type: string
+              id:
+                format: uuid
+                type: string
+              name:
+                maxLength: 500
+                type: string
+              password:
+                type: string
+      description: Body request
+      required: true
+  responses:
+    ErrorResponse:
+      content:
+        application/json:
+          schema:
+            properties:
+              code:
+                type: integer
+              error_code:
+                nullable: true
+                type: string
+              error_msg:
+                nullable: true
+                type: string
+      description: Body response
+    UserDetail:
+      content:
+        application/json:
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                $ref: '#/components/schemas/UserDTO'
+      description: Body response
+    UserRegister:
+      content:
+        application/json:
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                $ref: '#/components/schemas/UserDTO'
+      description: Body response
+    UserUpdate:
+      content:
+        application/json:
+          schema:
+            properties:
+              code:
+                type: integer
+              data:
+                $ref: '#/components/schemas/UserDTO'
+      description: Body response
+  schemas:
+    UserDTO:
+      properties:
+        bio:
+          type: string
+        created_date:
+          format: date-time
+          type: string
+        id:
+          format: uuid
+          type: string
+        name:
+          type: string
+        updated_date:
+          format: date-time
+          type: string
+      type: object
+info:
+  contact:
+    url: https://github.com/duongnln96/blog-realworld
+  description: REST APIs used for interacting with the User Service
+  title: User API
+  version: 0.0.0
+openapi: 3.0.0
+paths:
+  /api/v1/user/:user_id:
+    get:
+      operationId: user/user_id
+      parameters:
+      - in: path
+        name: user_id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        "200":
+          $ref: '#/components/responses/UserDetail'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
+        "500":
+          $ref: '#/components/responses/ErrorResponse'
+  /api/v1/user/register:
+    put:
+      operationId: user/register
+      requestBody:
+        $ref: '#/components/requestBodies/RegisterUserDTO'
+      responses:
+        "200":
+          $ref: '#/components/responses/UserRegister'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
+        "500":
+          $ref: '#/components/responses/ErrorResponse'
+  /api/v1/user/update:
+    post:
+      operationId: user/update
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserDTO'
+      responses:
+        "200":
+          $ref: '#/components/responses/UserUpdate'
+        "400":
+          $ref: '#/components/responses/ErrorResponse'
+        "500":
+          $ref: '#/components/responses/ErrorResponse'
+servers:
+- description: Local development
+  url: http://127.0.0.1
+- description: http://0.0.0.0
+  url: Docker environment

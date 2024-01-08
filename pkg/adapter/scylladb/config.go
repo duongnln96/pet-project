@@ -7,14 +7,17 @@ import (
 )
 
 type ScyllaDBConfig struct {
-	Name      string        `mapstructure:"name" json:"name"`
-	Hosts     []string      `mapstructure:"hosts" json:"hosts"`
-	Port      int           `mapstructure:"port" json:"port"`
-	UserName  string        `mapstructure:"username" json:"username"`
-	Password  string        `mapstructure:"password" json:"password"`
-	Keyspace  string        `mapstructure:"keyspace" json:"keyspace"`
-	Timeout   time.Duration `mapstructure:"timeout" json:"timeout"`
-	PoolLimit int           `mapstructure:"pool_limit" json:"pool_limit"`
+	Name              string        `mapstructure:"name" json:"name"`
+	Hosts             []string      `mapstructure:"hosts" json:"hosts"`
+	Port              int           `mapstructure:"port" json:"port"`
+	UserName          string        `mapstructure:"username" json:"username"`
+	Password          string        `mapstructure:"password" json:"password"`
+	Keyspace          string        `mapstructure:"keyspace" json:"keyspace"`
+	ReplicationClass  string        `mapstructure:"replication_class" json:"replication_class"`
+	ReplicationFactor string        `mapstructure:"replication_factor" json:"replication_factor"`
+	ConsistentFactor  string        `mapstructure:"consistent_factor" json:"consistent_factor"`
+	Timeout           time.Duration `mapstructure:"timeout" json:"timeout"`
+	PoolLimit         int           `mapstructure:"pool_limit" json:"pool_limit"`
 }
 
 func (m ScyllaDBConfig) PrettyPrint() string {

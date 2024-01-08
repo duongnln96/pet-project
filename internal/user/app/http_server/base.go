@@ -2,6 +2,9 @@ package http_server
 
 import (
 	"context"
+	"embed"
+	"errors"
+	"io/fs"
 	"log/slog"
 	"net/http"
 	"os"
@@ -16,8 +19,13 @@ import (
 	"github.com/duongnln96/blog-realworld/internal/pkg/validator"
 	profileHandler "github.com/duongnln96/blog-realworld/internal/user/app/http_server/handler/profile"
 	userHandler "github.com/duongnln96/blog-realworld/internal/user/app/http_server/handler/user"
+	"github.com/duongnln96/blog-realworld/internal/user/app/open_api3"
+
 	"github.com/duongnln96/blog-realworld/pkg/config"
 )
+
+//go:embed assets
+var content embed.FS
 
 func Run(config *config.Configs) error {
 	httpApp := InitNewApp(config)
@@ -46,7 +54,25 @@ func NewApp(
 }
 
 func (s *app) initRouter(e *echo.Echo) {
-	s.publicRoute(e)
+
+	// health route
+	e.GET("/health", serror.HealthHandler)
+
+	// swagger
+	fsys, _ := fs.Sub(content, "assets")
+	e.GET("/static/*", echo.WrapHandler(http.StripPrefix("/static/", http.FileServer(http.FS(fsys)))))
+
+	// register openapi3
+	s.registerOpenApi3(e)
+
+	s.routeVer1(e)
+}
+
+func (s *app) registerOpenApi3(e *echo.Echo) {
+	swagger := open_api3.NewOpenAPI3()
+	e.GET("/user/swagger.json", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, swagger)
+	})
 }
 
 func (s *app) initMiddleware(e *echo.Echo) {
@@ -72,7 +98,7 @@ func (s *app) Serve() error {
 
 	go func() {
 		slog.Info("🌏 Start server...")
-		if err := e.Start(":80"); err != nil {
+		if err := e.Start(":80"); errors.Is(err, http.ErrServerClosed) {
 			slog.Info("=> shutting down the server", "error_info", err.Error())
 		}
 	}()

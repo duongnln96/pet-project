@@ -2,10 +2,10 @@ package logger
 
 import (
 	"context"
+	"log/slog"
 	"strings"
 
 	"github.com/sirupsen/logrus"
-	"golang.org/x/exp/slog"
 )
 
 type LogrusHandler struct {
@@ -67,6 +67,7 @@ func (h *LogrusHandler) Handle(ctx context.Context, rec slog.Record) error {
 
 func (h *LogrusHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	// not implemented for brevity
+
 	return h
 }
 

@@ -43,15 +43,15 @@ func (m *UserDTO) Domain2Port(domain domain.User) {
 }
 
 type RegisterUserDTO struct {
-	Name     string `json:"name" validate:"required"`
-	Bio      string `json:"bio"`
-	Email    string `json:"email" validate:"required"`
+	Name     string `json:"name" validate:"required,max=500"`
+	Bio      string `json:"bio" validate:"omitempty,max=1000"`
+	Email    string `json:"email" validate:"required,max=500"`
 	Password string `json:"password" validate:"required"`
 }
 
 type LoginUserDTO struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" validate:"required,max=500"`
+	Password string `json:"password" validate:"required"`
 }
 
 type UpdateUserDTO struct {

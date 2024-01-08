@@ -99,3 +99,7 @@ func Service2EchoErr(sErr error) error {
 		return NewErrorResponse(http.StatusOK, serr.Code, serr.Msg)
 	}
 }
+
+func HealthHandler(c echo.Context) error {
+	return c.JSON(EchoSuccess(nil))
+}

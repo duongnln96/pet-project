@@ -12,15 +12,24 @@ new_migration:
 sqlc_gen:
 	sqlc generate
 
-proto-go-gen:
-	echo "++++ buf generate ++++"
-	rm -rf ./gen/go/* && buf generate && go mod tidy
-	echo "++++ complete ++++"
-.PHONY: proto-go-gen
+buf_gen:
+	rm -rf ./gen/go/* && \
+	buf generate && \
+	go mod tidy
+.PHONY: buf_gen
 
 clean:
 	go clean
 
 wire:
-	cd internal/user/app/http_server && wire && cd -
+	cd internal/user/app/http_server && wire && cd - && \
+	cd internal/auth/app/grpc_server && wire && cd -
 .PHONY: wire
+
+up_core_env:
+	docker compose -f docker-compose-core.yaml up -d
+.PHONY: up_core_env
+
+down_core_env:
+	docker compose -f docker-compose-core.yaml down
+.PHONY: down_core_env
