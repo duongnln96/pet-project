@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/duongnln96/blog-realworld/internal/auth/port"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/port"
 	"github.com/duongnln96/blog-realworld/internal/pkg/serror"
 )
 

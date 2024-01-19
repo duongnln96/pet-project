@@ -1,5 +1,6 @@
 # === http server ===
 
+http_address: "127.0.0.1"
 http_port: 80
 
 # === other ===

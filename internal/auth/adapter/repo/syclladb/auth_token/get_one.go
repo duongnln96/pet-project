@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/duongnln96/blog-realworld/internal/auth/domain"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/domain"
 	"github.com/gocql/gocql"
 	"github.com/google/uuid"
 )

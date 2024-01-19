@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/duongnln96/blog-realworld/internal/auth/domain"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/domain"
 )
 
 func (r *repoManager) Create(ctx context.Context, model domain.AuthToken) (domain.AuthToken, error) {

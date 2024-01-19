@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	authTokenGen "github.com/duongnln96/blog-realworld/gen/go/auth/v1"
-	"github.com/duongnln96/blog-realworld/internal/auth/port"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/port"
 	"github.com/duongnln96/blog-realworld/internal/pkg/serror"
 )
 

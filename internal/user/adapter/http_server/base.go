@@ -8,13 +8,6 @@ import (
 	"github.com/duongnln96/blog-realworld/pkg/config"
 )
 
-func Run(config *config.Configs) error {
-	app, cancel := InitNewApp(config)
-	defer cancel()
-
-	return app.httpServer.Start()
-}
-
 type app struct {
 	config *config.Configs
 
@@ -38,4 +31,10 @@ func NewApp(
 		userHandler:   userHandler,
 		profileHander: profileHander,
 	}
+}
+
+func (a *app) Serve() error {
+	a.routeVer1()
+
+	return a.httpServer.Start()
 }

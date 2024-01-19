@@ -8,8 +8,7 @@ import (
 
 	"github.com/duongnln96/blog-realworld/pkg/config"
 
-	grpcServer "github.com/duongnln96/blog-realworld/internal/auth/app/grpc_server"
-	migrate "github.com/duongnln96/blog-realworld/internal/auth/app/migrations"
+	migrate "github.com/duongnln96/blog-realworld/internal/auth/adapter/migrations"
 
 	"github.com/urfave/cli/v2"
 )
@@ -25,13 +24,6 @@ func main() {
 	app := cli.NewApp()
 
 	app.Commands = []*cli.Command{
-		{
-			Name:    "grpc_server",
-			Aliases: []string{"grpc"},
-			Action: func(c *cli.Context) error {
-				return grpcServer.RunGRPCServer(configs)
-			},
-		},
 		{
 			Name: "migrations",
 			Action: func(c *cli.Context) error {

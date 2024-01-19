@@ -44,8 +44,8 @@ func newPostgresDbAdapter(cfg *config.Configs) (postgres.PostgresDBAdapterI, fun
 	return adapter, func() { adapter.Close() }
 }
 
-func newHTTPServer() echoAdapaer.HTTPServerI {
+func newHTTPServer() (echoAdapaer.HTTPServerI, func()) {
 	echoServer := echoAdapaer.NewHttpServer()
 
-	return echoServer
+	return echoServer, func() { echoServer.Stop() }
 }

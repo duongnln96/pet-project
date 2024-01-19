@@ -3,7 +3,7 @@ package auth_token
 import (
 	"time"
 
-	"github.com/duongnln96/blog-realworld/internal/auth/port"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/port"
 	"github.com/gocql/gocql"
 	"github.com/google/uuid"
 	"github.com/google/wire"

@@ -23,7 +23,7 @@ clean:
 
 wire:
 	cd internal/user/adapter/http_server && wire && cd - && \
-	cd internal/auth/app/grpc_server && wire && cd -
+	cd internal/auth/adapter/grpc_server && wire && cd -
 .PHONY: wire
 
 up_core_env:

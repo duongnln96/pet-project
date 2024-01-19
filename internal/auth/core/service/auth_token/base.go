@@ -1,7 +1,7 @@
 package auth_token
 
 import (
-	"github.com/duongnln96/blog-realworld/internal/auth/port"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/port"
 	"github.com/duongnln96/blog-realworld/internal/pkg/token"
 
 	"github.com/google/wire"

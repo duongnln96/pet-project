@@ -1,6 +1,7 @@
-# === http server ===
+# === grpc server ===
 
-http_port: 80
+grpc_address: "0.0.0.0"
+grpc_port: 5003
 
 # === other ===
 

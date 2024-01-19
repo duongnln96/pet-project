@@ -7,12 +7,15 @@
 package grpc_server
 
 import (
+	auth_token3 "github.com/duongnln96/blog-realworld/internal/auth/adapter/grpc_server/handler/auth_token"
 	"github.com/duongnln96/blog-realworld/internal/auth/adapter/repo/syclladb/auth_token"
-	auth_token3 "github.com/duongnln96/blog-realworld/internal/auth/app/grpc_server/handler/auth_token"
-	auth_token2 "github.com/duongnln96/blog-realworld/internal/auth/usecases/auth_token"
+	auth_token2 "github.com/duongnln96/blog-realworld/internal/auth/core/service/auth_token"
+	"github.com/duongnln96/blog-realworld/internal/auth/infras/grpc_server"
 	"github.com/duongnln96/blog-realworld/internal/pkg/token"
 	"github.com/duongnln96/blog-realworld/pkg/adapter/scylladb"
 	"github.com/duongnln96/blog-realworld/pkg/config"
+	grpc2 "github.com/duongnln96/blog-realworld/pkg/middleware/grpc"
+	"google.golang.org/grpc"
 	"log"
 	"log/slog"
 )
@@ -20,26 +23,28 @@ import (
 // Injectors from wire.go:
 
 func InitNewApp(config2 *config.Configs, logger *slog.Logger) (*app, func()) {
-	scyllaDBAdaterI, cleanup := scylladbAdapter(config2)
+	grpcServerAdapterI, cleanup := NewGrpcServerAdapter(config2, logger)
+	scyllaDBAdaterI, cleanup2 := NewScylladbAdapter(config2)
 	authTokenRepoI := auth_token.NewRepoManager(scyllaDBAdaterI)
-	tokenMakerI := jwtTokenAdapter(config2)
+	tokenMakerI := NewJwtTokenAdapter(config2)
 	authTokenUseCasesI := auth_token2.NewUsecases(authTokenRepoI, tokenMakerI)
 	authTokenServiceServer := auth_token3.NewHandler(authTokenUseCasesI)
-	grpc_serverApp := NewApp(config2, logger, authTokenServiceServer)
+	grpc_serverApp := NewApp(config2, logger, grpcServerAdapterI, authTokenServiceServer)
 	return grpc_serverApp, func() {
+		cleanup2()
 		cleanup()
 	}
 }
 
 // wire.go:
 
-func scylladbAdapter(cfg *config.Configs) (scylladb.ScyllaDBAdaterI, func()) {
+func NewScylladbAdapter(cfg *config.Configs) (scylladb.ScyllaDBAdaterI, func()) {
 	adapter := scylladb.NewScyllaDBAdapter(cfg.ScyllaDBConfigMap.Get("scylladb"))
 
 	return adapter, func() { adapter.Close() }
 }
 
-func jwtTokenAdapter(cfg *config.Configs) token.TokenMakerI {
+func NewJwtTokenAdapter(cfg *config.Configs) token.TokenMakerI {
 	secret, ok := cfg.Other.Get("jwt_secret_key").(string)
 	if !ok {
 		log.Panic("Cannot get jwt_secret_key")
@@ -51,4 +56,12 @@ func jwtTokenAdapter(cfg *config.Configs) token.TokenMakerI {
 	}
 
 	return tokenMaker
+}
+
+func NewGrpcServerAdapter(cfg *config.Configs, logger *slog.Logger) (grpc_server.GrpcServerAdapterI, func()) {
+
+	adapter := grpc_server.NewGRPCServerAdapter(cfg, logger, grpc.ChainUnaryInterceptor(grpc2.NewLoggingUnaryInterceptor(logger).LoggingUnaryInterceptor),
+	)
+
+	return adapter, func() { adapter.Stop() }
 }

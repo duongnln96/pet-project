@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/duongnln96/blog-realworld/internal/auth/domain"
-	"github.com/duongnln96/blog-realworld/internal/auth/port"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/domain"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/port"
 	"github.com/duongnln96/blog-realworld/internal/pkg/serror"
 	"github.com/google/uuid"
 )

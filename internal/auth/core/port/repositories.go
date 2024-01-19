@@ -3,7 +3,7 @@ package port
 import (
 	"context"
 
-	"github.com/duongnln96/blog-realworld/internal/auth/domain"
+	"github.com/duongnln96/blog-realworld/internal/auth/core/domain"
 	"github.com/google/uuid"
 )
 

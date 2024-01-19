@@ -21,8 +21,8 @@ import (
 // Injectors from wire.go:
 
 func InitNewApp(config2 *config.Configs) (*app, func()) {
-	httpServerI := newHTTPServer()
-	postgresDBAdapterI, cleanup := newPostgresDbAdapter(config2)
+	httpServerI, cleanup := newHTTPServer()
+	postgresDBAdapterI, cleanup2 := newPostgresDbAdapter(config2)
 	userRepoI := user.NewRepoManager(postgresDBAdapterI)
 	userServiceI := user2.NewService(config2, userRepoI)
 	handlerI := user3.NewHandler(userServiceI)
@@ -31,6 +31,7 @@ func InitNewApp(config2 *config.Configs) (*app, func()) {
 	profileHandlerI := profile2.NewHandler(followServiceI, userServiceI)
 	http_serverApp := NewApp(config2, httpServerI, handlerI, profileHandlerI)
 	return http_serverApp, func() {
+		cleanup2()
 		cleanup()
 	}
 }
@@ -43,8 +44,8 @@ func newPostgresDbAdapter(cfg *config.Configs) (postgres.PostgresDBAdapterI, fun
 	return adapter, func() { adapter.Close() }
 }
 
-func newHTTPServer() echo_framework.HTTPServerI {
+func newHTTPServer() (echo_framework.HTTPServerI, func()) {
 	echoServer := echo_framework.NewHttpServer()
 
-	return echoServer
+	return echoServer, func() { echoServer.Stop() }
 }
