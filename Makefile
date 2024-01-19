@@ -26,10 +26,18 @@ wire:
 	cd internal/auth/adapter/grpc_server && wire && cd -
 .PHONY: wire
 
-up_core_env:
-	docker compose -f docker-compose-core.yaml up -d
+up_infras_env:
+	docker compose -f docker-compose-infras.yaml up -d
 .PHONY: up_core_env
 
-down_core_env:
-	docker compose -f docker-compose-core.yaml down
+down_infras_env:
+	docker compose -f docker-compose-infras.yaml down
+.PHONY: down_core_env
+
+up_svc_env:
+	docker compose -f docker-compose-service.yaml up -d
+.PHONY: up_core_env
+
+down_svc_env:
+	docker compose -f docker-compose-service.yaml down
 .PHONY: down_core_env

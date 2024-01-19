@@ -10,7 +10,7 @@ COPY --from=modules /go/pkg /go/pkg
 COPY . /app
 WORKDIR /app
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -tags migrate -o /bin/app ./cmd/user
+    go build -tags migrate -o /bin/app ./cmd/auth/grpc_server
 
 # Step 3: Final
 FROM alpine:3.19
