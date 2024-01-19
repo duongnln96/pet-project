@@ -1,10 +1,8 @@
 package http_server
 
-import "github.com/labstack/echo/v4"
+func (app *app) routeVer1() {
 
-func (app *app) routeVer1(e *echo.Echo) {
-
-	apiV1 := e.Group("/api/v1")
+	apiV1 := app.httpServer.GroupRouter("/api/v1")
 
 	userApi := apiV1.Group("/user")
 	{
@@ -19,5 +17,4 @@ func (app *app) routeVer1(e *echo.Echo) {
 		profileApi.POST("/:follow_user_id/follow", app.profileHander.Follow)
 		profileApi.DELETE("/:unfollow_user_id/unfollow", app.profileHander.Unfollow)
 	}
-
 }

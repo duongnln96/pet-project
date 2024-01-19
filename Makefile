@@ -22,7 +22,7 @@ clean:
 	go clean
 
 wire:
-	cd internal/user/app/http_server && wire && cd - && \
+	cd internal/user/adapter/http_server && wire && cd - && \
 	cd internal/auth/app/grpc_server && wire && cd -
 .PHONY: wire
 

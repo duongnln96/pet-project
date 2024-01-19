@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/duongnln96/blog-realworld/third_party/OpenAPI/user"
 	"github.com/ghodss/yaml"
 	"github.com/urfave/cli/v2"
 )
@@ -21,7 +22,7 @@ func Run(cliCtx *cli.Context) error {
 
 	output = cliCtx.Path("output")
 
-	swagger := NewOpenAPI3()
+	swagger := user.NewOpenAPI3()
 
 	// openapi3.json
 	data, err := json.Marshal(&swagger)
