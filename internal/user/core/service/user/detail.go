@@ -9,19 +9,19 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *service) Detail(ctx context.Context, req uuid.UUID) (port.UserDTO, error) {
+func (s *service) Detail(ctx context.Context, req uuid.UUID) (*port.UserDTO, error) {
 
 	userRes := port.NewEmptyUserDTO()
 
 	user, err := s.userRepo.GetOneByID(ctx, req)
 	if err != nil {
-		return userRes, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
 	if !user.IsExist() {
-		return userRes, serror.NewSError(domain.NotFoundErrUser, "user not found")
+		return nil, serror.NewSError(domain.NotFoundErrUser, "user not found")
 	}
 
 	userRes.Domain2Port(user)
 
-	return userRes, nil
+	return &userRes, nil
 }

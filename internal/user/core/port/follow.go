@@ -7,6 +7,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type FollowRepoI interface {
+	Create(ctx context.Context, followedUserID uuid.UUID, followingUserID uuid.UUID) (domain.Follow, error)
+	Update(ctx context.Context, followedUserID uuid.UUID, followingUserID uuid.UUID, status domain.FollowStatus) (domain.Follow, error)
+	AllByFollowedUserID(ctx context.Context, followedUserID uuid.UUID, offset int64, limit int32) (domain.Follows, error)
+	GetOne(ctx context.Context, followedUserID uuid.UUID, followingUserID uuid.UUID) (domain.Follow, error)
+	CountByFollowedUserID(ctx context.Context, followedUserID uuid.UUID) (int64, error)
+}
+
 type FollowServiceI interface {
 	Unfollow(ctx context.Context, followedUserID uuid.UUID, followingUserID uuid.UUID) (FollowDTO, error)
 	CountByFollowedUserID(ctx context.Context, followedUserID uuid.UUID) (int64, error)

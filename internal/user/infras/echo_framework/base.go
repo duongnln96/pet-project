@@ -4,7 +4,6 @@ import (
 	"context"
 	"embed"
 	"errors"
-	"fmt"
 	"io/fs"
 	"log/slog"
 	"net/http"
@@ -87,14 +86,12 @@ func (s *httpServer) initSystemMiddleware() {
 
 func (s *httpServer) Start() error {
 
-	serverAddress := fmt.Sprintf("%s:%d", s.configs.Other.Get("http_address"), s.configs.Other.Get("http_port"))
-
 	s.initSystemMiddleware()
 	s.initSystemRouter()
 
 	go func() {
 		slog.Info("🌏 Start server...")
-		if err := s.e.Start(serverAddress); errors.Is(err, http.ErrServerClosed) {
+		if err := s.e.Start(":80"); errors.Is(err, http.ErrServerClosed) {
 			slog.Info("=> shutting down the server", "error_info", err.Error())
 			return
 		}

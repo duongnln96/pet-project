@@ -7,12 +7,19 @@ import (
 	"github.com/google/uuid"
 )
 
+type UserRepoI interface {
+	Create(context.Context, domain.User) (domain.User, error)
+	Update(context.Context, domain.User) (domain.User, error)
+	GetOneByID(context.Context, uuid.UUID) (domain.User, error)
+	GetOneByEmail(context.Context, string) (domain.User, error)
+}
+
 type UserServiceI interface {
-	LogIn(context.Context, LoginUserDTO) (string, error)
+	LogIn(context.Context, *LoginUserDTO) (string, error)
 	LogOut(context.Context) error
-	Register(context.Context, RegisterUserDTO) (UserDTO, error)
-	Update(context.Context, UpdateUserDTO) (UserDTO, error)
-	Detail(context.Context, uuid.UUID) (UserDTO, error)
+	Register(context.Context, *RegisterUserDTO) (*UserDTO, error)
+	Update(context.Context, *UpdateUserDTO) (*UserDTO, error)
+	Detail(context.Context, uuid.UUID) (*UserDTO, error)
 }
 
 type UserDTO struct {

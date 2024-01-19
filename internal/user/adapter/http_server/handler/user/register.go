@@ -22,14 +22,9 @@ func (h *handler) Register(c echo.Context) error {
 		return serror.NewErrorResponse(http.StatusBadRequest, "", err.Error())
 	}
 
-	user, err := h.userService.Register(httpCtx, *request)
+	user, err := h.userService.Register(httpCtx, request)
 	if err != nil {
-		serr, _ := err.(*serror.SError)
-		if serr.IsSystem {
-			return serror.NewErrorResponse(http.StatusInternalServerError, serr.Code, serr.Msg)
-		} else {
-			return serror.NewErrorResponse(http.StatusOK, serr.Code, serr.Msg)
-		}
+		return serror.Service2EchoErr(err)
 	}
 
 	return c.JSON(serror.EchoSuccess(user))

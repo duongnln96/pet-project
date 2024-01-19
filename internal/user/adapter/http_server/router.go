@@ -6,9 +6,10 @@ func (app *app) routeVer1() {
 
 	userApi := apiV1.Group("/user")
 	{
-		userApi.GET("/detail", app.userHandler.Detail)
+		userApi.GET("/:user_id", app.userHandler.Detail)
 		userApi.PUT("/register", app.userHandler.Register)
 		userApi.POST("/update", app.userHandler.Update)
+		userApi.POST("/login", app.userHandler.Login)
 	}
 
 	profileApi := apiV1.Group("/profile")

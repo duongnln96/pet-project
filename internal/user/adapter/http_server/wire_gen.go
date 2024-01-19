@@ -14,17 +14,24 @@ import (
 	"github.com/duongnln96/blog-realworld/internal/user/core/service/profile"
 	user2 "github.com/duongnln96/blog-realworld/internal/user/core/service/user"
 	"github.com/duongnln96/blog-realworld/internal/user/infras/echo_framework"
+	"github.com/duongnln96/blog-realworld/internal/user/infras/grpc_client/auth/auth_token"
 	"github.com/duongnln96/blog-realworld/pkg/adapter/postgres"
 	"github.com/duongnln96/blog-realworld/pkg/config"
 )
 
 // Injectors from wire.go:
 
-func InitNewApp(config2 *config.Configs) (*app, func()) {
+func InitNewApp(config2 *config.Configs) (*app, func(), error) {
 	httpServerI, cleanup := newHTTPServer()
 	postgresDBAdapterI, cleanup2 := newPostgresDbAdapter(config2)
 	userRepoI := user.NewRepoManager(postgresDBAdapterI)
-	userServiceI := user2.NewService(config2, userRepoI)
+	authTokenDomainI, err := auth_token.NewGrpcClient(config2)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	userServiceI := user2.NewService(config2, userRepoI, authTokenDomainI)
 	handlerI := user3.NewHandler(userServiceI)
 	followRepoI := follow.NewRepoManager(postgresDBAdapterI)
 	followServiceI := profile.NewService(config2, followRepoI, userRepoI)
@@ -33,7 +40,7 @@ func InitNewApp(config2 *config.Configs) (*app, func()) {
 	return http_serverApp, func() {
 		cleanup2()
 		cleanup()
-	}
+	}, nil
 }
 
 // wire.go:

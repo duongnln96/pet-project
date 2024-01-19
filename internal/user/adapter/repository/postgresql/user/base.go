@@ -114,9 +114,11 @@ func (r *repoManager) GetOneByEmail(ctx context.Context, email string) (user dom
 	}
 
 	return domain.User{
-		ID:     rowResult.ID,
-		Name:   rowResult.Username,
-		Bio:    rowResult.Bio,
-		Status: domain.NewUserStatusFromString(rowResult.Status),
+		ID:       rowResult.ID,
+		Name:     rowResult.Username,
+		Bio:      rowResult.Bio,
+		Email:    rowResult.Email,
+		Password: rowResult.PasswordHash,
+		Status:   domain.NewUserStatusFromString(rowResult.Status),
 	}, nil
 }

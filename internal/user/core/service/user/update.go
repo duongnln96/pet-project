@@ -12,16 +12,14 @@ import (
 	gUtils "github.com/duongnln96/blog-realworld/pkg/utils"
 )
 
-func (s *service) Update(ctx context.Context, req port.UpdateUserDTO) (user port.UserDTO, err error) {
-
-	var userDTORes = port.NewEmptyUserDTO()
+func (s *service) Update(ctx context.Context, req *port.UpdateUserDTO) (user *port.UserDTO, err error) {
 
 	domainUser, err := s.userRepo.GetOneByID(ctx, req.ID)
 	if err != nil {
-		return userDTORes, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
 	if !domainUser.IsExist() {
-		return userDTORes, serror.NewSError(domain.NotFoundErrUser, "user not found")
+		return nil, serror.NewSError(domain.NotFoundErrUser, "user not found")
 	}
 
 	if req.Name != nil {
@@ -35,7 +33,7 @@ func (s *service) Update(ctx context.Context, req port.UpdateUserDTO) (user port
 	if req.Email != nil {
 
 		if err := s.validateEmail(*req.Email); err != nil {
-			return userDTORes, err
+			return nil, err
 		}
 
 		domainUser.Email = strings.TrimSpace(*req.Email)
@@ -44,11 +42,11 @@ func (s *service) Update(ctx context.Context, req port.UpdateUserDTO) (user port
 	if req.Password != nil {
 		secretKey, ok := s.config.Other.Get("password_secret_key").(string)
 		if !ok {
-			return userDTORes, serror.NewSystemSError("cannot get password secret key")
+			return nil, serror.NewSystemSError("cannot get password secret key")
 		}
 		hashPassword, err := utils.HashPassword(*req.Password, secretKey)
 		if err != nil {
-			return userDTORes, serror.NewSystemSError(err.Error())
+			return nil, serror.NewSystemSError(err.Error())
 		}
 
 		domainUser.Password = hashPassword
@@ -56,10 +54,12 @@ func (s *service) Update(ctx context.Context, req port.UpdateUserDTO) (user port
 
 	updatedUser, err := s.userRepo.Update(ctx, domainUser)
 	if err != nil {
-		return userDTORes, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
+
+	var userDTORes = port.NewEmptyUserDTO()
 
 	userDTORes.Domain2Port(updatedUser)
 
-	return userDTORes, nil
+	return &userDTORes, nil
 }

@@ -1,0 +1,3 @@
+auth_grpc_client:
+  url: 0.0.0.0:5001
+  timeout: 30s

@@ -8,16 +8,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-type otherConfig map[string]interface{}
-
-func (m otherConfig) Get(key string) interface{} {
-	return m[key]
-}
-
 type Configs struct {
-	Other             otherConfig
-	PostgresConfigMap postgresDB.PosgreSQLDBConfigMap
-	ScyllaDBConfigMap scyllaDB.ScyllaDBConfigMap
+	Other               otherConfig
+	GrpcClientConfigMap GrpcClientConfigMap
+	PostgresConfigMap   postgresDB.PosgreSQLDBConfigMap
+	ScyllaDBConfigMap   scyllaDB.ScyllaDBConfigMap
 }
 
 func readAllConfig(configPath string) *Configs {
@@ -27,6 +22,8 @@ func readAllConfig(configPath string) *Configs {
 
 	onceConfigs.Other = make(map[string]interface{})
 	readConfig(configPath, "other", &onceConfigs.Other)
+
+	readConfig(configPath, "grpc_client", &(onceConfigs.GrpcClientConfigMap))
 
 	readConfig(configPath, "postgres", &(onceConfigs.PostgresConfigMap))
 

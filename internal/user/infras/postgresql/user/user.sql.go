@@ -57,6 +57,7 @@ select
     id,
     email,
     username,
+    password_hash,
     status,
     bio
 from
@@ -66,11 +67,12 @@ where
 `
 
 type GetOneByEmailRow struct {
-	ID       uuid.UUID `json:"id"`
-	Email    string    `json:"email"`
-	Username string    `json:"username"`
-	Status   string    `json:"status"`
-	Bio      string    `json:"bio"`
+	ID           uuid.UUID `json:"id"`
+	Email        string    `json:"email"`
+	Username     string    `json:"username"`
+	PasswordHash string    `json:"password_hash"`
+	Status       string    `json:"status"`
+	Bio          string    `json:"bio"`
 }
 
 func (q *Queries) GetOneByEmail(ctx context.Context, email string) (GetOneByEmailRow, error) {
@@ -80,6 +82,7 @@ func (q *Queries) GetOneByEmail(ctx context.Context, email string) (GetOneByEmai
 		&i.ID,
 		&i.Email,
 		&i.Username,
+		&i.PasswordHash,
 		&i.Status,
 		&i.Bio,
 	)

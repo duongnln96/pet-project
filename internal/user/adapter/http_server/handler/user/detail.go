@@ -9,32 +9,20 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type detailReq struct {
-	ID uuid.UUID `query:"id" validate:"required"`
-}
-
 func (h *handler) Detail(c echo.Context) error {
 
 	slog.Info("Get detail user")
 
 	httpCtx := c.Request().Context()
 
-	var request = new(detailReq)
-	if err := c.Bind(request); err != nil {
-		return serror.NewErrorResponse(http.StatusBadRequest, "", err.Error())
-	}
-	if err := c.Validate(request); err != nil {
-		return serror.NewErrorResponse(http.StatusBadRequest, "", err.Error())
+	userID, err := uuid.Parse(c.Param("user_id"))
+	if err != nil {
+		return serror.NewErrorResponse(http.StatusBadRequest, serror.ErrUserCommon, err.Error())
 	}
 
-	user, err := h.userService.Detail(httpCtx, request.ID)
+	user, err := h.userService.Detail(httpCtx, userID)
 	if err != nil {
-		serr, _ := err.(*serror.SError)
-		if serr.IsSystem {
-			return serror.NewErrorResponse(http.StatusBadGateway, serr.Code, serr.Msg)
-		} else {
-			return serror.NewErrorResponse(http.StatusOK, serr.Code, serr.Msg)
-		}
+		return serror.Service2EchoErr(err)
 	}
 
 	return c.JSON(serror.EchoSuccess(user))

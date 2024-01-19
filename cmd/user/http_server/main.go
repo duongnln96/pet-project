@@ -1,4 +1,4 @@
-package http_server
+package main
 
 import (
 	"fmt"
@@ -19,8 +19,12 @@ func main() {
 	configPath, _ := os.Getwd()
 	configs := config.LoadConfig(fmt.Sprintf("%s/config/user", configPath))
 
-	app, cancel := httpServer.InitNewApp(configs)
+	app, cancel, err := httpServer.InitNewApp(configs)
 	defer cancel()
+	if err != nil {
+		slog.Error("Application initialize error", "err_info", err.Error())
+		return
+	}
 
 	if err := app.Serve(); err != nil {
 		slog.Error("Application running error", "err_info", err.Error())

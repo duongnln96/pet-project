@@ -10,6 +10,7 @@ import (
 type HandlerI interface {
 	Detail(echo.Context) error
 	Register(echo.Context) error
+	Login(echo.Context) error
 	Update(echo.Context) error
 }
 

@@ -1,11 +1,9 @@
 package user
 
 import (
-	"log"
 	"regexp"
 
 	"github.com/duongnln96/blog-realworld/internal/pkg/serror"
-	"github.com/duongnln96/blog-realworld/internal/pkg/token"
 	"github.com/duongnln96/blog-realworld/internal/user/core/domain"
 	"github.com/duongnln96/blog-realworld/internal/user/core/port"
 	"github.com/duongnln96/blog-realworld/pkg/config"
@@ -15,8 +13,8 @@ import (
 type service struct {
 	config *config.Configs
 
-	jwtMaker token.TokenMakerI
-	userRepo port.UserRepoI
+	userRepo        port.UserRepoI
+	authTokenDomain port.AuthTokenDomainI
 }
 
 var _ port.UserServiceI = (*service)(nil)
@@ -27,22 +25,14 @@ func NewService(
 	config *config.Configs,
 
 	userRepoInstance port.UserRepoI,
+	authTokenDomain port.AuthTokenDomainI,
 ) port.UserServiceI {
-
-	jwtSecretKey, ok := config.Other.Get("jwt_secret_key").(string)
-	if !ok {
-		log.Panicf("jwt_secret_key invalid")
-	}
-	jwtMaker, err := token.NewJWTTokenMaker(jwtSecretKey)
-	if err != nil {
-		log.Panicf("token.NewJWTTokenMaker %s", err.Error())
-	}
 
 	return &service{
 		config: config,
 
-		jwtMaker: jwtMaker,
-		userRepo: userRepoInstance,
+		userRepo:        userRepoInstance,
+		authTokenDomain: authTokenDomain,
 	}
 }
 

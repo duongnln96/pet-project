@@ -18,7 +18,6 @@ services:
         volumes:
             - data_volume:/var/lib/postgresql/data
         networks:
-            - blog_realworld_pg_network
             - blog_realworld_network
 
     scylla-node1:
@@ -31,7 +30,6 @@ services:
         volumes:
             - scylla_data_volume:/var/lib/scylla
         networks:
-            - blog_realworld_scylla_network
             - blog_realworld_network
 
 volumes:
@@ -39,9 +37,5 @@ volumes:
     scylla_data_volume:
 
 networks:
-    blog_realworld_pg_network:
-        driver: bridge
-    blog_realworld_scylla_network:
-        driver: bridge
     blog_realworld_network:
         driver: bridge

@@ -7,10 +7,11 @@ import (
 )
 
 const (
-	EmailInvalidErrUser    string = "email_invalid_err_user"
-	PasswordInvalidErrUser string = "password_invalid_err_user"
-	NotFoundErrUser        string = "not_found_err_user"
-	ExistedErrUser         string = "existed_err_user"
+	EmailInvalidErrUser     string = "email_invalid_err_user"
+	PasswordInvalidErrUser  string = "password_invalid_err_user"
+	NotFoundErrUser         string = "not_found_err_user"
+	ExistedErrUser          string = "existed_err_user"
+	LoginInfoInvalidErrUser string = "login_info_invalid_err_user"
 )
 
 type UserStatus string

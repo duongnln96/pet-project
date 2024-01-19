@@ -15,6 +15,7 @@ import (
 	userRepo "github.com/duongnln96/blog-realworld/internal/user/adapter/repository/postgresql/user"
 
 	echoAdapaer "github.com/duongnln96/blog-realworld/internal/user/infras/echo_framework"
+	authTokenGrpcClient "github.com/duongnln96/blog-realworld/internal/user/infras/grpc_client/auth/auth_token"
 
 	profileService "github.com/duongnln96/blog-realworld/internal/user/core/service/profile"
 	userService "github.com/duongnln96/blog-realworld/internal/user/core/service/user"
@@ -22,13 +23,14 @@ import (
 
 func InitNewApp(
 	config *config.Configs,
-) (*app, func()) {
+) (*app, func(), error) {
 	panic(wire.Build(
 		NewApp,
 		newHTTPServer,
 		newPostgresDbAdapter,
 
 		userRepo.RepositorySet,
+		authTokenGrpcClient.AuthTokenGrpcClientSet,
 		userService.ServiceSet,
 		userHandler.HandlerSet,
 

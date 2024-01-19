@@ -1,12 +1,6 @@
 -- name: GetOneByID :one
 select
-    id,
-    username,
-    email,
-    bio,
-    status,
-    created_date,
-    updated_date
+    *
 from
     "user"
 where
@@ -14,11 +8,7 @@ where
 
 -- name: GetOneByEmail :one
 select
-    id,
-    email,
-    username,
-    status,
-    bio
+    *
 from
     "user"
 where

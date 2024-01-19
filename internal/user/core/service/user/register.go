@@ -13,29 +13,27 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *service) Register(ctx context.Context, req port.RegisterUserDTO) (port.UserDTO, error) {
-
-	var userDTORes = port.NewEmptyUserDTO()
+func (s *service) Register(ctx context.Context, req *port.RegisterUserDTO) (*port.UserDTO, error) {
 
 	if err := s.validateEmail(req.Email); err != nil {
-		return userDTORes, err
+		return nil, err
 	}
 
 	secretKey, ok := s.config.Other.Get("password_secret_key").(string)
 	if !ok {
-		return userDTORes, serror.NewSystemSError("cannot get password secret key")
+		return nil, serror.NewSystemSError("cannot get password secret key")
 	}
 	hashPassword, err := utils.HashPassword(req.Password, secretKey)
 	if err != nil {
-		return userDTORes, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
 
 	user, err := s.userRepo.GetOneByEmail(ctx, req.Email)
 	if err != nil {
-		return userDTORes, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
-	if !user.IsExist() {
-		return userDTORes, serror.NewSError(domain.NotFoundErrUser, "user not found")
+	if user.IsExist() {
+		return nil, serror.NewSError(domain.NotFoundErrUser, "user with email is existed")
 	}
 
 	doaminUser, err := s.userRepo.Create(ctx, domain.User{
@@ -47,10 +45,11 @@ func (s *service) Register(ctx context.Context, req port.RegisterUserDTO) (port.
 		Status:   domain.ActiveUserStatus,
 	})
 	if err != nil {
-		return userDTORes, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
 
+	var userDTORes = port.NewEmptyUserDTO()
 	userDTORes.Domain2Port(doaminUser)
 
-	return userDTORes, nil
+	return &userDTORes, nil
 }
