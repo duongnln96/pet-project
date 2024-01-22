@@ -15,10 +15,10 @@ type UserRepoI interface {
 }
 
 type UserServiceI interface {
-	LogIn(context.Context, *LoginUserDTO) (string, error)
+	LogIn(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	LogOut(context.Context) error
-	Register(context.Context, *RegisterUserDTO) (*UserDTO, error)
-	Update(context.Context, *UpdateUserDTO) (*UserDTO, error)
+	Register(context.Context, *RegisterUserRequest) (*UserDTO, error)
+	Update(context.Context, *UpdateUserRequest) (*UserDTO, error)
 	Detail(context.Context, uuid.UUID) (*UserDTO, error)
 }
 
@@ -49,19 +49,23 @@ func (m *UserDTO) Domain2Port(domain domain.User) {
 	m.TracingDTO.UpdatedDate = domain.UpdatedDate
 }
 
-type RegisterUserDTO struct {
-	Name     string `json:"name" validate:"required,max=500"`
-	Bio      string `json:"bio" validate:"omitempty,max=1000"`
-	Email    string `json:"email" validate:"required,max=500"`
-	Password string `json:"password" validate:"required"`
+type RegisterUserRequest struct {
+	Name     string
+	Bio      string
+	Email    string
+	Password string
 }
 
-type LoginUserDTO struct {
-	Email    string `json:"email" validate:"required,max=500"`
-	Password string `json:"password" validate:"required"`
+type LoginUserRequest struct {
+	Email    string
+	Password string
 }
 
-type UpdateUserDTO struct {
+type LoginUserResponse struct {
+	JwtToken string
+}
+
+type UpdateUserRequest struct {
 	ID       uuid.UUID `json:"id"`
 	Name     *string   `json:"name"`
 	Bio      *string   `json:"bio"`

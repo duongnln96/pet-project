@@ -11,52 +11,50 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *service) LogIn(ctx context.Context, req *port.LoginUserDTO) (string, error) {
-
-	var loginToken string
+func (s *service) LogIn(ctx context.Context, req *port.LoginUserRequest) (*port.LoginUserResponse, error) {
 
 	err := s.validateEmail(req.Email)
 	if err != nil {
-		return loginToken, err
+		return nil, err
 	}
 
 	secretKey, ok := s.config.Other.Get("password_secret_key").(string)
 	if !ok {
-		return loginToken, serror.NewSystemSError("cannot get password secret key")
+		return nil, serror.NewSystemSError("cannot get password secret key")
 	}
 	reqPasswordHashed, err := utils.HashPassword(req.Password, secretKey)
 	if err != nil {
-		return loginToken, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
 
 	user, err := s.userRepo.GetOneByEmail(ctx, req.Email)
 	if err != nil {
-		return loginToken, serror.NewSystemSError(err.Error())
+		return nil, serror.NewSystemSError(err.Error())
 	}
 	if !user.IsExist() {
-		return loginToken, serror.NewSError(domain.NotFoundErrUser, "user not found")
+		return nil, serror.NewSError(domain.NotFoundErrUser, "user not found")
 	}
 	if user.Password != reqPasswordHashed {
-		return loginToken, serror.NewSError(domain.PasswordInvalidErrUser, "email or password is invalid")
+		return nil, serror.NewSError(domain.PasswordInvalidErrUser, "email or password is invalid")
 	}
 
 	userAgent, ok := ctx.Value("user-agent").(string)
 	if !ok {
-		return loginToken, serror.NewSError(domain.LoginInfoInvalidErrUser, "user-agent invalid parsing")
+		return nil, serror.NewSError(domain.LoginInfoInvalidErrUser, "user-agent invalid parsing")
 	}
 
 	deviceIDStr, ok := ctx.Value("device-id").(string)
 	if !ok {
-		return loginToken, serror.NewSError(domain.LoginInfoInvalidErrUser, "device-id invalid parsing")
+		return nil, serror.NewSError(domain.LoginInfoInvalidErrUser, "device-id invalid parsing")
 	}
 	deviceID, err := uuid.Parse(deviceIDStr)
 	if err != nil {
-		return loginToken, serror.NewSError(domain.LoginInfoInvalidErrUser, "device-id invalid parsing")
+		return nil, serror.NewSError(domain.LoginInfoInvalidErrUser, "device-id invalid parsing")
 	}
 
 	remoteIP, ok := ctx.Value("remote-ip").(string)
 	if !ok {
-		return loginToken, serror.NewSError(domain.LoginInfoInvalidErrUser, "remote-ip invalid parsing")
+		return nil, serror.NewSError(domain.LoginInfoInvalidErrUser, "remote-ip invalid parsing")
 	}
 
 	token, err := s.authTokenDomain.GenAuthToken(ctx, &port.GenAuthTokenRequest{
@@ -66,10 +64,10 @@ func (s *service) LogIn(ctx context.Context, req *port.LoginUserDTO) (string, er
 		RemoteIP:  remoteIP,
 	})
 	if err != nil {
-		return loginToken, serror.NewSystemSError(fmt.Sprintf("authTokenDomain.GenAuthToken %s", err.Error()))
+		return nil, serror.NewSystemSError(fmt.Sprintf("authTokenDomain.GenAuthToken %s", err.Error()))
 	}
 
-	loginToken = token.JwtToken
-
-	return loginToken, nil
+	return &port.LoginUserResponse{
+		JwtToken: token.JwtToken,
+	}, nil
 }

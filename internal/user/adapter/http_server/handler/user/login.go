@@ -10,10 +10,19 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type loginRequest struct {
+	Email    string `json:"email" validate:"required,max=500"`
+	Password string `json:"password" validate:"required"`
+}
+
+type loginResponse struct {
+	JwtToken string `json:"jwt_token"`
+}
+
 func (h *handler) Login(c echo.Context) error {
 	defer slog.Info("Login user")
 
-	var request = new(port.LoginUserDTO)
+	var request = new(loginRequest)
 	if err := c.Bind(request); err != nil {
 		return serror.NewErrorResponse(http.StatusBadRequest, "", err.Error())
 	}
@@ -26,7 +35,10 @@ func (h *handler) Login(c echo.Context) error {
 	ctx = context.WithValue(ctx, "device-id", c.Request().Header.Get("Device-Id"))
 	ctx = context.WithValue(ctx, "remote-ip", c.RealIP())
 
-	user, err := h.userService.LogIn(ctx, request)
+	token, err := h.userService.LogIn(ctx, &port.LoginUserRequest{
+		Email:    request.Email,
+		Password: request.Password,
+	})
 	if err != nil {
 		serr, _ := err.(*serror.SError)
 		if serr.IsSystem {
@@ -36,5 +48,7 @@ func (h *handler) Login(c echo.Context) error {
 		}
 	}
 
-	return c.JSON(serror.EchoSuccess(user))
+	return c.JSON(serror.EchoSuccess(loginResponse{
+		JwtToken: token.JwtToken,
+	}))
 }

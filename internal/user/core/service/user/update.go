@@ -12,7 +12,7 @@ import (
 	gUtils "github.com/duongnln96/blog-realworld/pkg/utils"
 )
 
-func (s *service) Update(ctx context.Context, req *port.UpdateUserDTO) (user *port.UserDTO, err error) {
+func (s *service) Update(ctx context.Context, req *port.UpdateUserRequest) (user *port.UserDTO, err error) {
 
 	domainUser, err := s.userRepo.GetOneByID(ctx, req.ID)
 	if err != nil {

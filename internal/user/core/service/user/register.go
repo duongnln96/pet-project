@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *service) Register(ctx context.Context, req *port.RegisterUserDTO) (*port.UserDTO, error) {
+func (s *service) Register(ctx context.Context, req *port.RegisterUserRequest) (*port.UserDTO, error) {
 
 	if err := s.validateEmail(req.Email); err != nil {
 		return nil, err
