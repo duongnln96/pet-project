@@ -34,3 +34,13 @@ make sqlc_gen
 ```bash
 make new_migration name=<migration_name>
 ```
+
+- Up/Down core environment and application
+
+```bash
+make up_infras_env
+make down_infras_env
+
+make up_svc_env
+make down_svc_env
+```

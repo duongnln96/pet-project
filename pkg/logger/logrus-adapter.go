@@ -46,7 +46,11 @@ func (h *LogrusHandler) Handle(ctx context.Context, rec slog.Record) error {
 	fields := make(map[string]interface{}, rec.NumAttrs())
 
 	rec.Attrs(func(a slog.Attr) bool {
-		return fields[a.Key] == a.Value.Any()
+		if _, ok := fields[a.Key]; !ok {
+			fields[a.Key] = a.Value.Any()
+			return true
+		}
+		return false
 	})
 
 	entry := h.logger.WithFields(fields)

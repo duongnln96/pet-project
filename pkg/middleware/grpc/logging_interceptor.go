@@ -3,13 +3,16 @@ package grpc
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"time"
 
 	"google.golang.org/grpc"
 )
 
-func NewLoggingUnaryInterceptor(logger *slog.Logger) *loggingUnaryInterceptor {
+var _ (LoggingInterceptor) = (*loggingUnaryInterceptor)(nil)
+
+func NewLoggingUnaryInterceptor(logger *slog.Logger) LoggingInterceptor {
 	return &loggingUnaryInterceptor{
 		logger: logger,
 	}
@@ -34,11 +37,11 @@ func (m *loggingUnaryInterceptor) LoggingUnaryInterceptor(ctx context.Context, r
 	attrs := []slog.Attr{
 		{
 			Key:   "is_keep",
-			Value: slog.BoolValue(true),
+			Value: slog.StringValue("true"),
 		},
 		{
 			Key:   "latency",
-			Value: slog.Int64Value(latency),
+			Value: slog.StringValue(fmt.Sprintf("%dms", latency)),
 		},
 		{
 			Key:   "body-request",
@@ -53,7 +56,7 @@ func (m *loggingUnaryInterceptor) LoggingUnaryInterceptor(ctx context.Context, r
 	if err != nil {
 		attrs = append(attrs, slog.Attr{
 			Key:   "err_info",
-			Value: slog.StringValue(err.Error()),
+			Value: slog.AnyValue(err.Error()),
 		})
 	}
 

@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+    vault:
+        image: vault:1.13.3
+        container_name: vault1
+        ports:
+            - "8200:8200"
+        environment:
+            VAULT_DEV_ROOT_TOKEN_ID: "66c4e6b4-6700-4f7b-884f-39cc0f6462d9"
+            VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+        networks:
+            - blog_realworld_network
+
+networks:
+    blog_realworld_network:
+        driver: bridge
