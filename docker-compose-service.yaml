@@ -1,29 +1,25 @@
 version: "3.9"
 services:
-    user_http_service:
-        build:
-            context: .
-            dockerfile: ./docker/dockerfile_user_http
-        image: go_blog_user_http_service
-        environment:
-            APP_NAME: "user_http_service"
-        ports:
-            - 80:80
-        networks:
-            - blog_realworld_network
+  user_http_service:
+    image: duongtomho/go-blog_user_http
+    depends_on:
+      - auth_grpc_service
+    environment:
+      APP_NAME: "user_http_service"
+    ports:
+      - 80:80
+    networks:
+      - blog-realworld_blog_realworld_network
 
-    auth_grpc_service:
-        build:
-            context: .
-            dockerfile: ./docker/dockerfile_auth_grpc
-        image: go_blog_auth_grpc_service
-        environment:
-            APP_NAME: "auth_grpc_service"
-        ports:
-            - 5001:5001
-        networks:
-            - blog_realworld_network
+  auth_grpc_service:
+    image: duongtomho/go-blog_auth_grpc
+    environment:
+      APP_NAME: "auth_grpc_service"
+    ports:
+      - 5001:5001
+    networks:
+      - blog-realworld_blog_realworld_network
 
 networks:
-    blog_realworld_network:
-        driver: bridge
+  blog-realworld_blog_realworld_network:
+    external: true

@@ -19,7 +19,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	configPath, _ := os.Getwd()
-	configs := config.LoadConfig(fmt.Sprintf("%s/config/auth", configPath))
+	configs := config.LoadConfig(fmt.Sprintf("%sconfig/auth", configPath))
 
 	// setup logger
 	logrus.SetLevel(logger.ConvertLogLevel("debug"))

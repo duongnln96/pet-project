@@ -17,7 +17,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	configPath, _ := os.Getwd()
-	configs := config.LoadConfig(fmt.Sprintf("%s/config/auth", configPath))
+	configs := config.LoadConfig(fmt.Sprintf("%sconfig/auth", configPath))
 
 	if err := migrate.Run(configs); err != nil {
 		slog.Error("Server application running error", "err_info", err.Error())
