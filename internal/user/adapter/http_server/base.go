@@ -3,6 +3,7 @@ package http_server
 import (
 	profileHandler "github.com/duongnln96/blog-realworld/internal/user/adapter/http_server/handler/profile"
 	userHandler "github.com/duongnln96/blog-realworld/internal/user/adapter/http_server/handler/user"
+	"github.com/duongnln96/blog-realworld/internal/user/adapter/http_server/middlewares"
 	echoFramework "github.com/duongnln96/blog-realworld/internal/user/infras/echo_framework"
 
 	"github.com/duongnln96/blog-realworld/pkg/config"
@@ -11,7 +12,8 @@ import (
 type app struct {
 	config *config.Configs
 
-	httpServer echoFramework.HTTPServerI
+	httpServer     echoFramework.HTTPServerI
+	authMiddleware *middlewares.AuthMiddleware
 
 	userHandler   userHandler.HandlerI
 	profileHander profileHandler.HandlerI
@@ -19,14 +21,17 @@ type app struct {
 
 func NewApp(
 	config *config.Configs,
+
 	httpServer echoFramework.HTTPServerI,
+	authMiddleware *middlewares.AuthMiddleware,
 
 	userHandler userHandler.HandlerI,
 	profileHander profileHandler.HandlerI,
 ) *app {
 	return &app{
-		config:     config,
-		httpServer: httpServer,
+		config:         config,
+		httpServer:     httpServer,
+		authMiddleware: authMiddleware,
 
 		userHandler:   userHandler,
 		profileHander: profileHander,

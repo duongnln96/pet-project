@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	AuthTokenService_ValidateAuthToken_FullMethodName = "/auth.v1.AuthTokenService/ValidateAuthToken"
 	AuthTokenService_GenAuthToken_FullMethodName      = "/auth.v1.AuthTokenService/GenAuthToken"
+	AuthTokenService_DeleteAuthToken_FullMethodName   = "/auth.v1.AuthTokenService/DeleteAuthToken"
 )
 
 // AuthTokenServiceClient is the client API for AuthTokenService service.
@@ -29,6 +30,7 @@ const (
 type AuthTokenServiceClient interface {
 	ValidateAuthToken(ctx context.Context, in *ValidateAuthTokenRequest, opts ...grpc.CallOption) (*ValidateAuthTokenResponse, error)
 	GenAuthToken(ctx context.Context, in *GenAuthTokenRequest, opts ...grpc.CallOption) (*GenAuthTokenResponse, error)
+	DeleteAuthToken(ctx context.Context, in *DeleteAuthTokenRequest, opts ...grpc.CallOption) (*DeleteAuthTokenResponse, error)
 }
 
 type authTokenServiceClient struct {
@@ -57,12 +59,22 @@ func (c *authTokenServiceClient) GenAuthToken(ctx context.Context, in *GenAuthTo
 	return out, nil
 }
 
+func (c *authTokenServiceClient) DeleteAuthToken(ctx context.Context, in *DeleteAuthTokenRequest, opts ...grpc.CallOption) (*DeleteAuthTokenResponse, error) {
+	out := new(DeleteAuthTokenResponse)
+	err := c.cc.Invoke(ctx, AuthTokenService_DeleteAuthToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthTokenServiceServer is the server API for AuthTokenService service.
 // All implementations must embed UnimplementedAuthTokenServiceServer
 // for forward compatibility
 type AuthTokenServiceServer interface {
 	ValidateAuthToken(context.Context, *ValidateAuthTokenRequest) (*ValidateAuthTokenResponse, error)
 	GenAuthToken(context.Context, *GenAuthTokenRequest) (*GenAuthTokenResponse, error)
+	DeleteAuthToken(context.Context, *DeleteAuthTokenRequest) (*DeleteAuthTokenResponse, error)
 	mustEmbedUnimplementedAuthTokenServiceServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedAuthTokenServiceServer) ValidateAuthToken(context.Context, *V
 }
 func (UnimplementedAuthTokenServiceServer) GenAuthToken(context.Context, *GenAuthTokenRequest) (*GenAuthTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenAuthToken not implemented")
+}
+func (UnimplementedAuthTokenServiceServer) DeleteAuthToken(context.Context, *DeleteAuthTokenRequest) (*DeleteAuthTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAuthToken not implemented")
 }
 func (UnimplementedAuthTokenServiceServer) mustEmbedUnimplementedAuthTokenServiceServer() {}
 
@@ -125,6 +140,24 @@ func _AuthTokenService_GenAuthToken_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthTokenService_DeleteAuthToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAuthTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthTokenServiceServer).DeleteAuthToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthTokenService_DeleteAuthToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthTokenServiceServer).DeleteAuthToken(ctx, req.(*DeleteAuthTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthTokenService_ServiceDesc is the grpc.ServiceDesc for AuthTokenService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var AuthTokenService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenAuthToken",
 			Handler:    _AuthTokenService_GenAuthToken_Handler,
+		},
+		{
+			MethodName: "DeleteAuthToken",
+			Handler:    _AuthTokenService_DeleteAuthToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

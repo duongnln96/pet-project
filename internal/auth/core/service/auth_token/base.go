@@ -7,21 +7,21 @@ import (
 	"github.com/google/wire"
 )
 
-var _ port.AuthTokenUseCasesI = (*usecases)(nil)
+var _ port.AuthTokenServiceI = (*service)(nil)
 
-var UsecasesSet = wire.NewSet(NewUsecases)
+var ServiceSet = wire.NewSet(NewService)
 
-type usecases struct {
+type service struct {
 	jwtMaker token.TokenMakerI
 
 	authTokenRepo port.AuthTokenRepoI
 }
 
-func NewUsecases(
+func NewService(
 	authTokenRepoInstance port.AuthTokenRepoI,
 	jwtMakerInstance token.TokenMakerI,
-) port.AuthTokenUseCasesI {
-	return &usecases{
+) port.AuthTokenServiceI {
+	return &service{
 		jwtMaker:      jwtMakerInstance,
 		authTokenRepo: authTokenRepoInstance,
 	}

@@ -4,18 +4,25 @@ func (app *app) routeVer1() {
 
 	apiV1 := app.httpServer.GroupRouter("/api/v1")
 
+	// unauthorized api group
 	userApi := apiV1.Group("/user")
 	{
-		userApi.GET("/:user_id", app.userHandler.Detail)
-		userApi.PUT("/register", app.userHandler.Register)
-		userApi.POST("/update", app.userHandler.Update)
 		userApi.POST("/login", app.userHandler.Login)
+		userApi.PUT("/register", app.userHandler.Register)
 	}
 
-	profileApi := apiV1.Group("/profile")
+	// authorized api group
+	authApiV1 := apiV1.Group("", app.authMiddleware.ValidateToken)
+	authUserApi := authApiV1.Group("/user")
 	{
-		profileApi.GET("/:profile_user_id", app.profileHander.Profile)
-		profileApi.POST("/:follow_user_id/follow", app.profileHander.Follow)
-		profileApi.DELETE("/:unfollow_user_id/unfollow", app.profileHander.Unfollow)
+		authUserApi.GET("/:user_id", app.userHandler.Detail)
+		authUserApi.POST("/update", app.userHandler.Update)
+	}
+
+	authProfileApi := authApiV1.Group("/profile")
+	{
+		authProfileApi.GET("/:profile_user_id", app.profileHander.Profile)
+		authProfileApi.POST("/:follow_user_id/follow", app.profileHander.Follow)
+		authProfileApi.DELETE("/:unfollow_user_id/unfollow", app.profileHander.Unfollow)
 	}
 }

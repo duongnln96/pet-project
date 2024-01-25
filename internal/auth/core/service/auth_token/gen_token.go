@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (u *usecases) GenToken(ctx context.Context, req port.GenAuthTokenRequest) (port.GenAuthTokenResponse, error) {
+func (u *service) GenToken(ctx context.Context, req port.GenAuthTokenRequest) (port.GenAuthTokenResponse, error) {
 
 	userID, err := uuid.Parse(req.UserID)
 	if err != nil {

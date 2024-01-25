@@ -7,11 +7,9 @@ import (
 	"github.com/duongnln96/blog-realworld/internal/user/core/port"
 )
 
-func (m *authTokenGRPCClient) ValidateToken(ctx context.Context, req *port.ValidateTokenRequest) (*port.ValidateTokenResponse, error) {
+func (c *authTokenDomainClient) ValidateToken(ctx context.Context, req *port.ValidateTokenRequest) (*port.ValidateTokenResponse, error) {
 
-	client := authTokenGen.NewAuthTokenServiceClient(m.conn)
-
-	validatedToken, err := client.ValidateAuthToken(ctx, &authTokenGen.ValidateAuthTokenRequest{
+	validatedToken, err := c.domain.ValidateAuthToken(ctx, &authTokenGen.ValidateAuthTokenRequest{
 		JwtToken: req.JwtToken,
 	})
 	if err != nil {

@@ -13,11 +13,11 @@ var _ authTokenGen.AuthTokenServiceServer = (*handler)(nil)
 type handler struct {
 	authTokenGen.UnimplementedAuthTokenServiceServer
 
-	authTokenUC port.AuthTokenUseCasesI
+	authTokenUC port.AuthTokenServiceI
 }
 
 func NewHandler(
-	authTokenUCInstance port.AuthTokenUseCasesI,
+	authTokenUCInstance port.AuthTokenServiceI,
 ) authTokenGen.AuthTokenServiceServer {
 	return &handler{
 		authTokenUC: authTokenUCInstance,

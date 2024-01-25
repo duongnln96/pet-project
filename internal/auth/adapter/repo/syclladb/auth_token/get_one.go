@@ -13,7 +13,7 @@ func (r *repoManager) GetOneByPrimary(ctx context.Context, tokenID uuid.UUID) (d
 
 	row := AuthTokenRow{}
 
-	if err := r.db.GetSession().Query(authenTokenTable.Select()).WithContext(ctx).Bind(GoogleUUIDMarshaler{tokenID}).Scan(&row); err != nil {
+	if err := r.db.GetSession().Query(authenTokenTable.Select()).WithContext(ctx).Bind(GoogleUUIDMarshaler{tokenID}).Get(&row); err != nil {
 		if errors.Is(err, gocql.ErrNotFound) {
 			return domain.AuthToken{}, nil
 		}

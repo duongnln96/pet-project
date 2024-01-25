@@ -10,8 +10,6 @@ import (
 )
 
 func (h *handler) ValidateAuthToken(ctx context.Context, request *authTokenGen.ValidateAuthTokenRequest) (*authTokenGen.ValidateAuthTokenResponse, error) {
-	// defer slog.InfoContext(ctx, "ValidateAuthToken", "request", request.String())
-
 	response := &authTokenGen.ValidateAuthTokenResponse{}
 
 	validationInfo, err := h.authTokenUC.ValidateToken(ctx, port.ValidateTokenRequest{

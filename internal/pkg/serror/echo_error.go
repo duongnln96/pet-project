@@ -11,6 +11,7 @@ const (
 	ErrSystemInternal string = "err_system_internal"
 	ErrUserCommon     string = "err_user_common"
 	ErrNotFound       string = "err_not_found"
+	ErrUnauthorized   string = "err_unauthorized"
 )
 
 type EchoErrorResponse struct {

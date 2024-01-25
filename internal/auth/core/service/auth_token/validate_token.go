@@ -8,7 +8,7 @@ import (
 	"github.com/duongnln96/blog-realworld/internal/pkg/serror"
 )
 
-func (u *usecases) ValidateToken(ctx context.Context, req port.ValidateTokenRequest) (port.ValidateTokenResponse, error) {
+func (u *service) ValidateToken(ctx context.Context, req port.ValidateTokenRequest) (port.ValidateTokenResponse, error) {
 
 	response := port.ValidateTokenResponse{
 		IsValid: false,

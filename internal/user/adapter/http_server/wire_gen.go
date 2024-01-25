@@ -9,8 +9,10 @@ package http_server
 import (
 	profile2 "github.com/duongnln96/blog-realworld/internal/user/adapter/http_server/handler/profile"
 	user3 "github.com/duongnln96/blog-realworld/internal/user/adapter/http_server/handler/user"
+	"github.com/duongnln96/blog-realworld/internal/user/adapter/http_server/middlewares"
 	"github.com/duongnln96/blog-realworld/internal/user/adapter/repository/postgresql/follow"
 	"github.com/duongnln96/blog-realworld/internal/user/adapter/repository/postgresql/user"
+	"github.com/duongnln96/blog-realworld/internal/user/core/port"
 	"github.com/duongnln96/blog-realworld/internal/user/core/service/profile"
 	user2 "github.com/duongnln96/blog-realworld/internal/user/core/service/user"
 	"github.com/duongnln96/blog-realworld/internal/user/infras/echo_framework"
@@ -23,20 +25,16 @@ import (
 
 func InitNewApp(config2 *config.Configs) (*app, func(), error) {
 	httpServerI, cleanup := newHTTPServer()
+	authTokenDomainI := newAuthTokenDoamin(config2)
+	authMiddleware := middlewares.NewAuthMiddleware(authTokenDomainI)
 	postgresDBAdapterI, cleanup2 := newPostgresDbAdapter(config2)
 	userRepoI := user.NewRepoManager(postgresDBAdapterI)
-	authTokenDomainI, err := auth_token.NewGrpcClient(config2)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	userServiceI := user2.NewService(config2, userRepoI, authTokenDomainI)
 	handlerI := user3.NewHandler(userServiceI)
 	followRepoI := follow.NewRepoManager(postgresDBAdapterI)
 	followServiceI := profile.NewService(config2, followRepoI, userRepoI)
 	profileHandlerI := profile2.NewHandler(followServiceI, userServiceI)
-	http_serverApp := NewApp(config2, httpServerI, handlerI, profileHandlerI)
+	http_serverApp := NewApp(config2, httpServerI, authMiddleware, handlerI, profileHandlerI)
 	return http_serverApp, func() {
 		cleanup2()
 		cleanup()
@@ -55,4 +53,8 @@ func newHTTPServer() (echo_framework.HTTPServerI, func()) {
 	echoServer := echo_framework.NewHttpServer()
 
 	return echoServer, func() { echoServer.Stop() }
+}
+
+func newAuthTokenDoamin(cfg *config.Configs) port.AuthTokenDomainI {
+	return auth_token.NewAuthTokenDomainClient(cfg)
 }

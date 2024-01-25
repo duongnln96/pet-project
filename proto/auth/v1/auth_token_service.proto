@@ -4,6 +4,7 @@ package auth.v1;
 service AuthTokenService {
   rpc ValidateAuthToken(ValidateAuthTokenRequest) returns (ValidateAuthTokenResponse) {}
   rpc GenAuthToken(GenAuthTokenRequest) returns (GenAuthTokenResponse) {}
+  rpc DeleteAuthToken(DeleteAuthTokenRequest) returns (DeleteAuthTokenResponse) {}
 }
 
 message ValidateAuthTokenRequest {
@@ -24,3 +25,9 @@ message GenAuthTokenRequest {
 message GenAuthTokenResponse {
   string jwt_token = 1;
 }
+
+message DeleteAuthTokenRequest {
+  string id = 1;
+}
+
+message DeleteAuthTokenResponse {}

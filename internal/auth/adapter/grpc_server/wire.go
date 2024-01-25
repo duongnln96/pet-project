@@ -9,7 +9,7 @@ import (
 
 	authTokenHandler "github.com/duongnln96/blog-realworld/internal/auth/adapter/grpc_server/handler/auth_token"
 	authTokenRepo "github.com/duongnln96/blog-realworld/internal/auth/adapter/repo/syclladb/auth_token"
-	authTokenUC "github.com/duongnln96/blog-realworld/internal/auth/core/service/auth_token"
+	authTokenSvc "github.com/duongnln96/blog-realworld/internal/auth/core/service/auth_token"
 	grpcServerAdapter "github.com/duongnln96/blog-realworld/internal/auth/infras/grpc_server"
 	grpcMiddlewares "github.com/duongnln96/blog-realworld/pkg/middleware/grpc"
 	"google.golang.org/grpc"
@@ -30,7 +30,7 @@ func InitNewApp(
 		NewScylladbAdapter,
 		NewJwtTokenAdapter,
 		authTokenRepo.RepoManagerSet,
-		authTokenUC.UsecasesSet,
+		authTokenSvc.ServiceSet,
 		authTokenHandler.HandlerSet,
 	))
 }

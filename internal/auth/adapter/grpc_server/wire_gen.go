@@ -27,8 +27,8 @@ func InitNewApp(config2 *config.Configs, logger *slog.Logger) (*app, func()) {
 	scyllaDBAdaterI, cleanup2 := NewScylladbAdapter(config2)
 	authTokenRepoI := auth_token.NewRepoManager(scyllaDBAdaterI)
 	tokenMakerI := NewJwtTokenAdapter(config2)
-	authTokenUseCasesI := auth_token2.NewUsecases(authTokenRepoI, tokenMakerI)
-	authTokenServiceServer := auth_token3.NewHandler(authTokenUseCasesI)
+	authTokenServiceI := auth_token2.NewService(authTokenRepoI, tokenMakerI)
+	authTokenServiceServer := auth_token3.NewHandler(authTokenServiceI)
 	grpc_serverApp := NewApp(config2, logger, grpcServerAdapterI, authTokenServiceServer)
 	return grpc_serverApp, func() {
 		cleanup2()

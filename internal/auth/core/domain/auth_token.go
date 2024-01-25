@@ -61,6 +61,10 @@ type AuthToken struct {
 	UpdatedDate *time.Time
 }
 
+func (m *AuthToken) IsExist() bool {
+	return m.ID != uuid.Nil
+}
+
 func (m *AuthToken) IsDeleted() bool {
 	return m.Status == DeletedAuthTokenStatus
 }

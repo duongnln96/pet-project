@@ -10,9 +10,6 @@ import (
 )
 
 func (h *handler) GenAuthToken(ctx context.Context, request *authTokenGen.GenAuthTokenRequest) (*authTokenGen.GenAuthTokenResponse, error) {
-
-	defer slog.InfoContext(ctx, "GenAuthToken", "request", request.String())
-
 	response := authTokenGen.GenAuthTokenResponse{}
 
 	generatedToken, sErr := h.authTokenUC.GenToken(ctx, port.GenAuthTokenRequest{
