@@ -20,21 +20,20 @@ services:
     networks:
       - blog_realworld_network
 
-  scylla-node1:
-    container_name: scylla-node1
-    image: scylladb/scylla:5.2.0
-    restart: always
-    command: --smp 1 --memory 500M --overprovisioned 1 --api-address 0.0.0.0
-    ports:
-      - "9042:9042"
-    volumes:
-      - scylla_data_volume:/var/lib/scylla
-    networks:
-      - blog_realworld_network
+  # scylla-node1:
+  #   container_name: scylla-node1
+  #   image: scylladb/scylla:5.2.0
+  #   restart: always
+  #   command: --smp 1 --memory 500M --overprovisioned 1 --api-address 0.0.0.0
+  #   ports:
+  #     - "9042:9042"
+  #   volumes:
+  #     - scylla_data_volume:/var/lib/scylla
+  #   networks:
+  #     - blog_realworld_network
 
 volumes:
   data_volume:
-  scylla_data_volume:
 
 networks:
   blog_realworld_network:

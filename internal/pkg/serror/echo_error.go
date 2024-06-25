@@ -96,9 +96,11 @@ func Service2EchoErr(sErr error) error {
 
 	if serr.IsSystem {
 		return NewErrorResponse(http.StatusInternalServerError, serr.Code, serr.Msg)
-	} else {
-		return NewErrorResponse(http.StatusOK, serr.Code, serr.Msg)
+	} else if serr.IsAuth {
+		return NewErrorResponse(http.StatusUnauthorized, serr.Code, serr.Msg)
 	}
+
+	return NewErrorResponse(http.StatusOK, serr.Code, serr.Msg)
 }
 
 func HealthHandler(c echo.Context) error {

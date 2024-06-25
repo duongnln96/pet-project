@@ -2,6 +2,7 @@ package serror
 
 type SError struct {
 	IsSystem bool
+	IsAuth   bool
 	Code     string
 	Msg      string
 }
@@ -12,9 +13,8 @@ func (e *SError) Error() string {
 
 func NewSError(code string, msg string) *SError {
 	return &SError{
-		IsSystem: false,
-		Code:     code,
-		Msg:      msg,
+		Code: code,
+		Msg:  msg,
 	}
 }
 
@@ -23,5 +23,13 @@ func NewSystemSError(msg string) *SError {
 		IsSystem: true,
 		Code:     ErrSystemInternal,
 		Msg:      msg,
+	}
+}
+
+func NewAuthError(msg string) *SError {
+	return &SError{
+		IsAuth: true,
+		Code:   ErrUnauthorized,
+		Msg:    msg,
 	}
 }
